@@ -15,10 +15,7 @@ export default function Main() {
           <Route path="/" element={<Home />} />
           <Route path="/complete-form" element={<FormContainer />} />
           <Route path="/create-form" element={<CreateForm />} />
-          <Route
-            path="/leaderboard"
-            element={<LeaderboardContainer account={account} />}
-          />
+          <Route path="/leaderboard" element={<LeaderboardContainer />} />
         </Routes>
       ) : (
         <p>Please, connect your wallet to continue</p>
