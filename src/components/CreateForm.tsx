@@ -15,7 +15,7 @@ const CreateForm = () => {
   const { contract: test } = useFormContract();
   const { data, loading, error, reset, invoke } = useStarknetInvoke({
     contract: test,
-    method: "create_test",
+    method: "create_form_add_questions",
   });
 
   const [description, setDescription] = useState("");
@@ -38,7 +38,7 @@ const CreateForm = () => {
   const handleSubmit = (event: any) => {
     event.preventDefault();
     const payload = {
-      args: [stringToHex(name), hexQuestions()],
+      args: [stringToHex(name), hexQuestions(), 0],
     };
     console.log("payload", payload);
     invoke(payload)

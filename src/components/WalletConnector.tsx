@@ -55,7 +55,6 @@ const WalletConnector = () => {
 
 const WalletConnectorModal = (props: any) => {
   const { available, connect } = useConnectors();
-  console.log(available);
   const argentX =
     available && available.find((connector) => connector.id() === "argent-x");
   const braavos =
