@@ -17,6 +17,7 @@ export default function Main() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/complete-form" element={<FormContainer />} />
+          <Route path="/complete-form/:id" element={<FormContainer />} />
           <Route path="/create-form" element={<CreateForm />} />
           <Route path="/my-forms" element={<MyForms />} />
           <Route path="/leaderboard" element={<LeaderboardContainer />} />

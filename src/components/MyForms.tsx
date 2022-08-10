@@ -1,10 +1,14 @@
-import { useStarknet, useStarknetCall } from "@starknet-react/core";
-import { useMemo, useState } from "react";
+import {
+  useStarknet,
+  useStarknetCall,
+  useStarknetInvoke,
+} from "@starknet-react/core";
+import { useEffect, useMemo, useState } from "react";
+import { Button, Form, Modal, OverlayTrigger, Tooltip } from "react-bootstrap";
+import Table from "react-bootstrap/Table";
+import { FaCheck, FaShareAlt } from "react-icons/fa";
 import { useFormContract } from "../hooks/useFormContract";
 import responseToString from "../utils/responseToString";
-import Table from "react-bootstrap/Table";
-import { FaCheck } from "react-icons/fa";
-import { Button, OverlayTrigger, Tooltip } from "react-bootstrap";
 
 interface FormRow {
   id: number;
@@ -17,12 +21,18 @@ const MyForms = () => {
   const { account } = useStarknet();
 
   const [myForms, setMyForms] = useState<FormRow[]>([]);
+  const [shareModalId, setShareModalId] = useState<number | null>(null);
 
   const { data: myFormsResult } = useStarknetCall({
     contract: test,
     method: "view_my_forms",
     args: [account],
     options: { watch: true },
+  });
+
+  const { data, loading, error, reset, invoke } = useStarknetInvoke({
+    contract: test,
+    method: "forms_change_status_ready",
   });
 
   useMemo(() => {
@@ -43,7 +53,23 @@ const MyForms = () => {
     }
   }, [myFormsResult]);
 
-  const readyHandler = (id: number) => () => {};
+  const readyHandler = (id: number) => () => {
+    const payload = {
+      args: [id],
+    };
+    console.log("payload", payload);
+    invoke(payload)
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((e) => {
+        console.log("error", e);
+      });
+  };
+
+  const showShareModal = (id: number) => () => {
+    setShareModalId(id);
+  };
 
   return (
     <>
@@ -83,6 +109,18 @@ const MyForms = () => {
                         </Button>
                       </OverlayTrigger>
                     )}
+                    <OverlayTrigger
+                      placement="bottom"
+                      overlay={
+                        <Tooltip id={`tooltip-${item.id}`}>
+                          Share form {item.id}
+                        </Tooltip>
+                      }
+                    >
+                      <Button onClick={showShareModal(item.id)}>
+                        <FaShareAlt />
+                      </Button>
+                    </OverlayTrigger>
                   </td>
                 </tr>
               );
@@ -94,7 +132,52 @@ const MyForms = () => {
           No forms found. Go to 'Create form' to create one.
         </p>
       )}
+      <ShareModal
+        id={shareModalId}
+        show={!!shareModalId}
+        onHide={() => setShareModalId(null)}
+      />
     </>
+  );
+};
+
+const ShareModal = (props: any) => {
+  const link = window.location.origin + '/complete-form/' + props.id;
+  const [copied, setCopied] = useState(false)
+
+  useEffect(() => {
+    setCopied(false)
+  }, [link])
+
+  const handleCopy = () => {
+    setCopied(true)
+    navigator.clipboard.writeText(link)
+  }
+
+  return (
+    <Modal
+      {...props}
+      size="md"
+      aria-labelledby="contained-modal-title-vcenter"
+      centered
+    >
+      <Modal.Header closeButton>
+        <Modal.Title id="contained-modal-title-vcenter">
+          Share form {props.id}
+        </Modal.Title>
+      </Modal.Header>
+      <Modal.Body className="modal-body">
+        <Form.Control
+          type="text"
+          value={link}
+          disabled
+        />
+      </Modal.Body>
+      <Modal.Footer>
+        <Button onClick={props.onHide} variant="secondary">Close</Button>
+        <Button onClick={handleCopy} disabled={copied} variant="primary">{copied ? 'Copied' : 'Copy link to clipboard'}</Button>
+      </Modal.Footer>
+    </Modal>
   );
 };
 
