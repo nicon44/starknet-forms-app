@@ -2,6 +2,7 @@ import {
   useStarknet,
   useStarknetCall,
   useStarknetInvoke,
+  useStarknetTransactionManager,
 } from "@starknet-react/core";
 import { useEffect, useMemo, useState } from "react";
 import { Button, Form, Modal, OverlayTrigger, Tooltip } from "react-bootstrap";
@@ -35,10 +36,15 @@ const MyForms = () => {
     method: "forms_change_status_ready",
   });
 
+  const { transactions } = useStarknetTransactionManager();
+
+  useEffect(() => {
+    console.log(transactions)
+  }, [transactions])
+
   useMemo(() => {
     if (myFormsResult && myFormsResult.length > 0) {
       if (myFormsResult[0] instanceof Array) {
-        console.log(myFormsResult);
         const resultMap = myFormsResult[0].map((item) => {
           return {
             id: +item.id,
@@ -47,7 +53,6 @@ const MyForms = () => {
           };
         });
         setMyForms(resultMap);
-        console.log("result map", resultMap);
         return;
       }
     }
@@ -57,13 +62,9 @@ const MyForms = () => {
     const payload = {
       args: [id],
     };
-    console.log("payload", payload);
     invoke(payload)
-      .then((response) => {
-        console.log(response);
-      })
       .catch((e) => {
-        console.log("error", e);
+        alert('There was an error in the transaction')
       });
   };
 
