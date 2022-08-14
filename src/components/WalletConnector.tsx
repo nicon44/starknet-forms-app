@@ -76,7 +76,7 @@ const WalletConnectorModal = (props: any) => {
           Connect a wallet
         </Modal.Title>
       </Modal.Header>
-      <Modal.Body className="modal-body">
+      <Modal.Body className="wallet-modal-body">
         <div className="wallets">
           <div
             onClick={connectWallet(argentX)}
