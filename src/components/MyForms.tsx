@@ -8,6 +8,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Button, Form, Modal, OverlayTrigger, Tooltip } from "react-bootstrap";
 import Table from "react-bootstrap/Table";
 import { FaCheck, FaShareAlt } from "react-icons/fa";
+import { TailSpin } from "react-loader-spinner";
 import { useFormContract } from "../hooks/useFormContract";
 import responseToString from "../utils/responseToString";
 
@@ -37,10 +38,22 @@ const MyForms = () => {
   });
 
   const { transactions } = useStarknetTransactionManager();
+  console.log(transactions)
+
+  const [pendingTransactions, setPendingTransactions] = useState<any[]>([]);
 
   useEffect(() => {
-    console.log(transactions)
-  }, [transactions])
+    setPendingTransactions(
+      transactions.filter(
+        (item: any) =>
+          item.transaction &&
+          item.transaction.type === 'INVOKE_FUNCTION' &&
+          item.status &&
+          item.status !== "ACCEPTED_ON_L2" &&
+          item.status !== "REJECTED"
+      )
+    );
+  }, [transactions]);
 
   useMemo(() => {
     if (myFormsResult && myFormsResult.length > 0) {
@@ -62,10 +75,9 @@ const MyForms = () => {
     const payload = {
       args: [id],
     };
-    invoke(payload)
-      .catch((e) => {
-        alert('There was an error in the transaction')
-      });
+    invoke(payload).catch((e) => {
+      alert("There was an error in the transaction");
+    });
   };
 
   const showShareModal = (id: number) => () => {
@@ -133,6 +145,25 @@ const MyForms = () => {
           No forms found. Go to 'Create form' to create one.
         </p>
       )}
+      {pendingTransactions.length > 0 && (
+        <h4 className="mt-3">Pending transactions</h4>
+      )}
+      {pendingTransactions.map((transaction) => {
+        return (
+          <p key={transaction.transactionHash}>
+            There's a pending transaction with status {transaction.status}
+          </p>
+        );
+      })}
+      {pendingTransactions.length > 0 && (
+        <TailSpin
+          height="25"
+          width="25"
+          radius="9"
+          color="black"
+          ariaLabel="loading"
+        />
+      )}
       <ShareModal
         id={shareModalId}
         show={!!shareModalId}
@@ -143,17 +174,17 @@ const MyForms = () => {
 };
 
 const ShareModal = (props: any) => {
-  const link = window.location.origin + '/complete-form/' + props.id;
-  const [copied, setCopied] = useState(false)
+  const link = window.location.origin + "/complete-form/" + props.id;
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
-    setCopied(false)
-  }, [link])
+    setCopied(false);
+  }, [link]);
 
   const handleCopy = () => {
-    setCopied(true)
-    navigator.clipboard.writeText(link)
-  }
+    setCopied(true);
+    navigator.clipboard.writeText(link);
+  };
 
   return (
     <Modal
@@ -168,15 +199,15 @@ const ShareModal = (props: any) => {
         </Modal.Title>
       </Modal.Header>
       <Modal.Body className="modal-body">
-        <Form.Control
-          type="text"
-          value={link}
-          disabled
-        />
+        <Form.Control type="text" value={link} disabled />
       </Modal.Body>
       <Modal.Footer>
-        <Button onClick={props.onHide} variant="secondary">Close</Button>
-        <Button onClick={handleCopy} disabled={copied} variant="primary">{copied ? 'Copied' : 'Copy link to clipboard'}</Button>
+        <Button onClick={props.onHide} variant="secondary">
+          Close
+        </Button>
+        <Button onClick={handleCopy} disabled={copied} variant="primary">
+          {copied ? "Copied" : "Copy link to clipboard"}
+        </Button>
       </Modal.Footer>
     </Modal>
   );
