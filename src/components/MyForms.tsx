@@ -5,9 +5,16 @@ import {
   useStarknetTransactionManager,
 } from "@starknet-react/core";
 import { useEffect, useMemo, useState } from "react";
-import { Button, Form, Modal, OverlayTrigger, Tooltip } from "react-bootstrap";
+import {
+  Badge,
+  Button,
+  Form,
+  Modal,
+  OverlayTrigger,
+  Tooltip,
+} from "react-bootstrap";
 import Table from "react-bootstrap/Table";
-import { FaCheck, FaShareAlt } from "react-icons/fa";
+import { FaCheck, FaShareAlt, FaTimes } from "react-icons/fa";
 import { TailSpin } from "react-loader-spinner";
 import { useFormContract } from "../hooks/useFormContract";
 import responseToString from "../utils/responseToString";
@@ -32,13 +39,17 @@ const MyForms = () => {
     options: { watch: true },
   });
 
-  const { data, loading, error, reset, invoke } = useStarknetInvoke({
+  const { invoke: invokeSetReady } = useStarknetInvoke({
     contract: test,
     method: "forms_change_status_ready",
   });
 
+  const { invoke: invokeClose } = useStarknetInvoke({
+    contract: test,
+    method: "close_forms",
+  });
+
   const { transactions } = useStarknetTransactionManager();
-  console.log(transactions)
 
   const [pendingTransactions, setPendingTransactions] = useState<any[]>([]);
 
@@ -47,7 +58,7 @@ const MyForms = () => {
       transactions.filter(
         (item: any) =>
           item.transaction &&
-          item.transaction.type === 'INVOKE_FUNCTION' &&
+          item.transaction.type === "INVOKE_FUNCTION" &&
           item.status &&
           item.status !== "ACCEPTED_ON_L2" &&
           item.status !== "REJECTED"
@@ -75,7 +86,15 @@ const MyForms = () => {
     const payload = {
       args: [id],
     };
-    invoke(payload).catch((e) => {
+    invokeSetReady(payload).catch((e) => {
+      alert("There was an error in the transaction");
+    });
+  };
+  const closeHandler = (id: number) => () => {
+    const payload = {
+      args: [id],
+    };
+    invokeClose(payload).catch((e) => {
       alert("There was an error in the transaction");
     });
   };
@@ -103,7 +122,11 @@ const MyForms = () => {
                 <tr key={item.id}>
                   <td>{item.id}</td>
                   <td>{item.name}</td>
-                  <td>{item.status}</td>
+                  <td>
+                    <span className={"badge rounded-pill " + item.status}>
+                      {item.status}
+                    </span>
+                  </td>
                   <td>
                     {item.status === "OPEN" && (
                       <OverlayTrigger
@@ -115,6 +138,7 @@ const MyForms = () => {
                         }
                       >
                         <Button
+                          className="mr-1"
                           variant="success"
                           onClick={readyHandler(item.id)}
                         >
@@ -122,18 +146,41 @@ const MyForms = () => {
                         </Button>
                       </OverlayTrigger>
                     )}
-                    <OverlayTrigger
-                      placement="bottom"
-                      overlay={
-                        <Tooltip id={`tooltip-${item.id}`}>
-                          Share form {item.id}
-                        </Tooltip>
-                      }
-                    >
-                      <Button onClick={showShareModal(item.id)}>
-                        <FaShareAlt />
-                      </Button>
-                    </OverlayTrigger>
+                    {item.status === "READY" && (
+                      <OverlayTrigger
+                        placement="bottom"
+                        overlay={
+                          <Tooltip id={`tooltip-${item.id}`}>
+                            Close form {item.id}
+                          </Tooltip>
+                        }
+                      >
+                        <Button
+                          className="mr-1"
+                          variant="danger"
+                          onClick={closeHandler(item.id)}
+                        >
+                          <FaTimes />
+                        </Button>
+                      </OverlayTrigger>
+                    )}
+                    {item.status === "READY" && (
+                      <OverlayTrigger
+                        placement="bottom"
+                        overlay={
+                          <Tooltip id={`tooltip-${item.id}`}>
+                            Share form {item.id}
+                          </Tooltip>
+                        }
+                      >
+                        <Button
+                          className="mr-1"
+                          onClick={showShareModal(item.id)}
+                        >
+                          <FaShareAlt />
+                        </Button>
+                      </OverlayTrigger>
+                    )}
                   </td>
                 </tr>
               );
@@ -151,7 +198,7 @@ const MyForms = () => {
       {pendingTransactions.map((transaction) => {
         return (
           <p key={transaction.transactionHash}>
-            There's a pending transaction with status {transaction.status}
+            There's an unfinished transaction with status {transaction.status}
           </p>
         );
       })}
@@ -164,6 +211,15 @@ const MyForms = () => {
           ariaLabel="loading"
         />
       )}
+      <h5 className="mt-3">Reference</h5>
+      <p>
+        A form in state <span className="badge rounded-pill OPEN">OPEN</span>{" "}
+        can be edited. <br />
+        A form in state <span className="badge rounded-pill READY">READY</span>{" "}
+        can be shared and completed by other users. <br />
+        When a form is <span className="badge rounded-pill CLOSED">CLOSED</span>{" "}
+        results are calculated. <br />
+      </p>
       <ShareModal
         id={shareModalId}
         show={!!shareModalId}
