@@ -29,9 +29,6 @@ const Header = () => {
                 <Nav.Link as={Link} to="/my-forms">
                   My forms
                 </Nav.Link>
-                <Nav.Link as={Link} to="/leaderboard">
-                  Leaderboard
-                </Nav.Link>
               </>
             )}
           </Nav>

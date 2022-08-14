@@ -18,6 +18,7 @@ import { FaCheck, FaShareAlt, FaTimes } from "react-icons/fa";
 import { TailSpin } from "react-loader-spinner";
 import { useFormContract } from "../hooks/useFormContract";
 import responseToString from "../utils/responseToString";
+import './MyForms.css';
 
 interface FormRow {
   id: number;
@@ -138,7 +139,7 @@ const MyForms = () => {
                         }
                       >
                         <Button
-                          className="mr-1"
+                          className="mr-1 action"
                           variant="success"
                           onClick={readyHandler(item.id)}
                         >
@@ -156,7 +157,7 @@ const MyForms = () => {
                         }
                       >
                         <Button
-                          className="mr-1"
+                          className="mr-1 action"
                           variant="danger"
                           onClick={closeHandler(item.id)}
                         >
@@ -174,7 +175,7 @@ const MyForms = () => {
                         }
                       >
                         <Button
-                          className="mr-1"
+                          className="mr-1 action"
                           onClick={showShareModal(item.id)}
                         >
                           <FaShareAlt />
