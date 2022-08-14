@@ -43,7 +43,7 @@ const CloseModal = (props: any) => {
         <Form.Label>Secret *</Form.Label>
         <Form.Control
           required
-          onChange={(event) => handleSecretChange}
+          onChange={handleSecretChange}
           type="text"
         />
         <Form.Text className="text-muted">

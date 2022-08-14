@@ -56,8 +56,6 @@ const CreateForm = () => {
       ],
     };
 
-    console.log(payload)
-
     invokeCreateAndAdd(payload)
       .then(() => {
         navigate("/my-forms");
@@ -88,13 +86,13 @@ const CreateForm = () => {
       case 0:
         correctOption = stringToHex(question.optionA);
         break;
-      case 1:
+        case 1:
         correctOption = stringToHex(question.optionB);
         break;
-      case 2:
+        case 2:
         correctOption = stringToHex(question.optionC);
         break;
-      case 3:
+        case 3:
         correctOption = stringToHex(question.optionD);
         break;
     }
@@ -228,7 +226,7 @@ const CreateForm = () => {
             />
             <Form.Text className="text-muted">
               {readySwitch
-                ? "This form will be set to READY. This means you will not be able to update it and other user will be able to complete it right away."
+                ? "This form will be set to READY. This means you will not be able to update it and other users will be able to complete it right away."
                 : "This form will stay OPEN. This means you will be able to update it later."}
             </Form.Text>
             {questions.length === 0 && (
