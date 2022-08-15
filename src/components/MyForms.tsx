@@ -4,10 +4,18 @@ import {
   useStarknetInvoke,
   useStarknetTransactionManager,
 } from "@starknet-react/core";
+import RcTooltip from "rc-tooltip";
+import "rc-tooltip/assets/bootstrap.css";
 import { useEffect, useMemo, useState } from "react";
-import { Button, OverlayTrigger, Tooltip } from "react-bootstrap";
+import { Button } from "react-bootstrap";
 import Table from "react-bootstrap/Table";
-import { FaCheck, FaClipboardList, FaEdit, FaShareAlt, FaTimes } from "react-icons/fa";
+import {
+  FaCheck,
+  FaClipboardList,
+  FaEdit,
+  FaShareAlt,
+  FaTimes,
+} from "react-icons/fa";
 import { TailSpin } from "react-loader-spinner";
 import { useNavigate } from "react-router-dom";
 import { useFormContract } from "../hooks/useFormContract";
@@ -136,13 +144,9 @@ const MyForms = () => {
                   <td>
                     {item.status.toUpperCase() === "OPEN" && (
                       <>
-                        <OverlayTrigger
+                        <RcTooltip
                           placement="bottom"
-                          overlay={
-                            <Tooltip id={`tooltip-${item.id}`}>
-                              Set form {item.id} to READY
-                            </Tooltip>
-                          }
+                          overlay={<span>Set form {item.id} to READY</span>}
                         >
                           <Button
                             className="mr-1 action"
@@ -151,14 +155,10 @@ const MyForms = () => {
                           >
                             <FaCheck />
                           </Button>
-                        </OverlayTrigger>
-                        <OverlayTrigger
+                        </RcTooltip>
+                        <RcTooltip
                           placement="bottom"
-                          overlay={
-                            <Tooltip id={`tooltip-${item.id}`}>
-                              Edit form {item.id}
-                            </Tooltip>
-                          }
+                          overlay={<span>Edit form {item.id}</span>}
                         >
                           <Button
                             className="mr-1 action"
@@ -167,18 +167,14 @@ const MyForms = () => {
                           >
                             <FaEdit />
                           </Button>
-                        </OverlayTrigger>
+                        </RcTooltip>
                       </>
                     )}
                     {item.status.toUpperCase() === "READY" && (
                       <>
-                        <OverlayTrigger
+                        <RcTooltip
                           placement="bottom"
-                          overlay={
-                            <Tooltip id={`tooltip-${item.id}`}>
-                              Close form {item.id}
-                            </Tooltip>
-                          }
+                          overlay={<span>Close form {item.id}</span>}
                         >
                           <Button
                             className="mr-1 action"
@@ -187,15 +183,11 @@ const MyForms = () => {
                           >
                             <FaTimes />
                           </Button>
-                        </OverlayTrigger>
+                        </RcTooltip>
 
-                        <OverlayTrigger
+                        <RcTooltip
                           placement="bottom"
-                          overlay={
-                            <Tooltip id={`tooltip-${item.id}`}>
-                              Share form {item.id}
-                            </Tooltip>
-                          }
+                          overlay={<span>Share form {item.id}</span>}
                         >
                           <Button
                             className="mr-1 action"
@@ -203,17 +195,13 @@ const MyForms = () => {
                           >
                             <FaShareAlt />
                           </Button>
-                        </OverlayTrigger>
+                        </RcTooltip>
                       </>
                     )}
                     {item.status.toUpperCase() === "CLOSED" && (
-                      <OverlayTrigger
+                      <RcTooltip
                         placement="bottom"
-                        overlay={
-                          <Tooltip id={`tooltip-${item.id}`}>
-                            View results of form {item.id}
-                          </Tooltip>
-                        }
+                        overlay={<span>View results of form {item.id}</span>}
                       >
                         <Button
                           className="mr-1 action"
@@ -222,7 +210,7 @@ const MyForms = () => {
                         >
                           <FaClipboardList />
                         </Button>
-                      </OverlayTrigger>
+                      </RcTooltip>
                     )}
                   </td>
                 </tr>

@@ -39,7 +39,7 @@ const Leaderboard: React.FC<{ formId: number }> = ({
     <Table striped bordered hover>
       <thead>
         <tr>
-          <th>Nickname</th>
+          <th>Name</th>
           <th>Wallet</th>
           <th>Score</th>
         </tr>

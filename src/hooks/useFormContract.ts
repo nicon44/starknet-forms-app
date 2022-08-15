@@ -6,6 +6,6 @@ import FormAbi from '../abi/formAbi.json'
 export function useFormContract() {
   return useContract({
     abi: FormAbi as Abi,
-    address: '0x076c82542aeb0fdc6d01009b2012e73ce3e0e879172231fff3cd4acc940900f6',
+    address: '0x0651fb4e2f0a4188dc35eb9d07724374d2d4bba12da21f52d3ee092505ab8bd0',
   })
 }
