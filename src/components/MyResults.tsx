@@ -14,6 +14,7 @@ interface FormRow {
   id: number;
   name: string;
   score: number;
+  status: string;
 }
 
 const MyResults = () => {
@@ -53,8 +54,9 @@ const MyResults = () => {
         const resultMap = myFormsResult[0].map((item) => {
           return {
             id: +item.id_form,
-            name: responseToString(item.nickname),
+            name: responseToString(item.name),
             score: +item['score']?.toString(10),
+            status: responseToString(item.status)
           };
         });
         setMyForms(resultMap);
@@ -71,7 +73,8 @@ const MyResults = () => {
           <thead>
             <tr>
               <th>id</th>
-              <th>Name</th>
+              <th>Form name</th>
+              <th>Form status</th>
               <th>Score</th>
             </tr>
           </thead>
@@ -81,7 +84,16 @@ const MyResults = () => {
                 <tr key={item.id}>
                   <td>{item.id}</td>
                   <td>{item.name}</td>
-                  <td>{item.score}</td>
+                  <td>
+                    <span
+                      className={
+                        "badge rounded-pill " + item.status.toUpperCase()
+                      }
+                    >
+                      {item.status.toUpperCase()}
+                    </span>
+                  </td>
+                  <td>{item.status.toUpperCase() === 'CLOSED' ? item.score : 'Form not closed'}</td>
                 </tr>
               );
             })}
