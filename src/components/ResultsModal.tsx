@@ -97,18 +97,13 @@ const ResultsModal: React.FC<{
     { label: "Score", key: "score" },
   ];
 
-  const getCsv = () => {
-    return leaderboard.map((item) => {
-      return [item.nickname, item.wallet, item.score];
-    });
-  };
-
   return (
     <Modal
       size="xl"
       aria-labelledby="contained-modal-title-vcenter"
       centered
       show={show}
+      onHide={onHide}
     >
       <Modal.Header closeButton>
         <Modal.Title id="contained-modal-title-vcenter">
