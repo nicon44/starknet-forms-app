@@ -1,0 +1,31 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Test dev 3001",
+      "request": "launch",
+      "type": "pwa-chrome",
+      "url": "http://localhost:3001/",
+      "webRoot": "${workspaceFolder}"
+    },
+    {
+      "name": "Test dev 3000",
+      "request": "launch",
+      "type": "pwa-chrome",
+      "url": "http://localhost:3000/",
+      "webRoot": "${workspaceFolder}"
+    },
+    {
+      "name": "Test current file",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/node_modules/.bin/jest",
+      "args": ["${file}"],
+      "windows": {
+        "program": "${workspaceFolder}/node_modules/jest/bin/jest"
+      },
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen"
+    }
+  ]
+}
